@@ -1,5 +1,7 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from .forms import TaskForm
 from .models import Task
 
 
@@ -18,4 +20,17 @@ def ViewAbout(request: HttpRequest) -> HttpResponse:
 
 
 def ViewCreate(request: HttpRequest) -> HttpResponse:
-    return render(request, 'main/create.html')
+    error = ""
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+        else:
+            error = "Форма некорректна"
+    form = TaskForm()
+    context = {
+        "form": form,
+        'error': error,
+    }
+    return render(request, 'main/create.html', context=context)
