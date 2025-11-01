@@ -6,7 +6,7 @@ from .models import Task
 
 
 def ViewIndex(request: HttpRequest) -> HttpResponse:
-    tasks = Task.objects.order_by('-id')
+    tasks = Task.objects.filter(status=False).order_by('-id')
     context = {
         'title': 'Главная страница',
         'tasks': tasks
